@@ -68,102 +68,54 @@ def main():
     # TODO: change default position and reset
     # reset environment
 
+    env.reset()
+
     articulation = env.unwrapped.scene["robot"]
 
     joint_names = IDENTIFIED_JOINTS
     joint_ids = [articulation.joint_names.index(name) for name in joint_names]
 
-    env.reset()
-
     project_data_dir = "anymal_sim"
     data_dir = project_root() / "data" / project_data_dir
 
-    time_frame = torch.linspace(0, 1000, steps=1000, device=env.unwrapped.device)
-    trajectory = torch.zeros((1000, 12), device=env.unwrapped.device)
-    trajectory[:, :] = 2 * torch.sin(0.2 * time_frame).unsqueeze(-1)
-    # Create a chirp signal for each action dimension
-
-    duration = 20  # seconds
-    sample_rate = 400  # Hz
-    num_steps = duration * sample_rate
-    t = torch.linspace(0, duration, steps=num_steps, device=env.unwrapped.device)
-    f0 = 0.1  # Hz (0.1)
-    f1 = 10.0  # Hz (10.0)
-
-    # Linear chirp: phase = 2*pi*(f0*t + (f1-f0)/(2*duration)*t^2)
-    phase = 2 * pi * (f0 * t + ((f1 - f0) / (2 * duration)) * t ** 2)
-    chirp_signal = torch.sin(phase)
-
-    trajectory = torch.zeros((num_steps, 12), device=env.unwrapped.device)
-    trajectory[:, :] = chirp_signal.unsqueeze(-1)
-    # trajectory[:, joint_ids[0]] *= 1.0  # LF_HAA
-    # trajectory[:, joint_ids[1]] *= 1.0  # LF_HFE
-    # trajectory[:, joint_ids[2]] *= 1.0  # LF_KFE
-    # trajectory[:, joint_ids[3]] *= -1.0  # RF_HAA
-    # trajectory[:, joint_ids[4]] *= 1.0  # RF_HFE
-    # trajectory[:, joint_ids[5]] *= 1.0  # RF_KFE
-    # trajectory[:, joint_ids[6]] *= 1.0  # LH_HAA
-    # trajectory[:, joint_ids[7]] *= -1.0  # LH_HFE
-    # trajectory[:, joint_ids[8]] *= -1.0  # LH_KFE
-    # trajectory[:, joint_ids[9]] *= -1.0  # RH_HAA
-    # trajectory[:, joint_ids[10]] *= -1.0  # RH_HFE
-    # trajectory[:, joint_ids[11]] *= -1.0  # RH_KFE
-    trajectory_directions = torch.tensor(
-        [1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0],
-        device=env.unwrapped.device
-    )
-    trajectory_bias = torch.tensor(
-        [0.0, 0.4, 0.8] * 4,
-        device=env.unwrapped.device
-    )
-    trajectory_scale = torch.tensor(
-        [0.25, 0.5, -2.0] * 4,
-        device=env.unwrapped.device
-    )
-    trajectory[:, joint_ids] = (trajectory[:, joint_ids] + trajectory_bias.unsqueeze(0)) * trajectory_directions.unsqueeze(0) * trajectory_scale.unsqueeze(0)
+    data = torch.load(data_dir / "chirp_data.pt")
+    time_data = data["time"].to(env.unwrapped.device)
+    target_dof_pos = data["dof_target_pos"].to(env.unwrapped.device)
+    measured_dof_pos = data["dof_pos"].to(env.unwrapped.device)
+    num_steps = time_data.shape[0]
+    sim_dt = env.unwrapped.sim.cfg.dt
 
     counter = 0
     # simulate environment
     dof_pos_buffer = torch.zeros(num_steps, len(joint_ids), device=env.unwrapped.device)
-    dof_target_pos_buffer = torch.zeros(num_steps, len(joint_ids), device=env.unwrapped.device)
-    time_data = t
     while simulation_app.is_running():
         # run everything in inference mode
         with torch.inference_mode():
             # compute zero actions
             actions = torch.zeros(env.action_space.shape, device=env.unwrapped.device)
-            actions = trajectory[counter % num_steps, :].unsqueeze(0).repeat(env.unwrapped.num_envs, 1)
-            if counter % 100 == 0:
-                print(f"[INFO]: Step {counter/sample_rate} seconds")
+            actions[:, joint_ids] = target_dof_pos[counter, :].unsqueeze(0).repeat(env.unwrapped.num_envs, 1)
             # apply actions
-            obs, _, _, _, _ = env.step(actions)
+            env.step(actions)
             dof_pos_buffer[counter, :] = env.unwrapped.scene.articulations["robot"].data.joint_pos[0, joint_ids]
-            dof_target_pos_buffer[counter, :] = env.unwrapped.scene.articulations["robot"]._data.joint_pos_target[0, joint_ids]
             counter += 1
+            if counter % 100 == 0:
+                print(f"[INFO]: Step {counter * sim_dt:.1f} / {time_data[-1]:.1f} seconds ({counter / num_steps * 100:.1f} %)")
             if counter >= num_steps:
+                print("[INFO]: Reached the end of the trajectory, exiting.")
                 break
 
     # close the simulator
     env.close()
-    
-    from time import sleep
-    sleep(1)  # wait a bit for everything to settle
-
-    torch.save({
-        "time": time_data.cpu(),
-        "dof_pos": dof_pos_buffer.cpu(),
-        "dof_target_pos": dof_target_pos_buffer.cpu(),
-    }, data_dir / "chirp_data.pt")
 
     import matplotlib.pyplot as plt
 
     for i in range(len(joint_ids)):
         plt.figure()
-        plt.plot(dof_pos_buffer[:, i].cpu().numpy(), label=f"{joint_names[i]} pos")
-        plt.plot(dof_target_pos_buffer[:, i].cpu().numpy(), label=f"{joint_names[i]} target", linestyle='dashed')
+        plt.plot(dof_pos_buffer[:, i].cpu().numpy(), label=f"{joint_names[i]} Sim")
+        plt.plot(target_dof_pos[:, i].cpu().numpy(), label=f"{joint_names[i]} Target", linestyle='dashed')
+        plt.plot(measured_dof_pos[:, i].cpu().numpy(), label=f"{joint_names[i]} Measured", linestyle='dotted')
         plt.legend()
         plt.show()
-
 
 if __name__ == "__main__":
     # run the main function
