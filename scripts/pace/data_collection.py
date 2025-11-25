@@ -1,7 +1,6 @@
-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
-# All rights reserved.
-#
-# SPDX-License-Identifier: BSD-3-Clause
+# © 2025 ETH Zurich, Robotic Systems Lab
+# Author: Filip Bjelonic
+# Licensed under the Apache License 2.0
 
 """Script to run an environment with zero action agent."""
 
@@ -155,8 +154,8 @@ def main():
 
     for i in range(len(joint_ids)):
         plt.figure()
-        plt.plot(t, dof_pos_buffer[:, i].cpu().numpy(), label=f"{joint_order[i]} pos")
-        plt.plot(t, dof_target_pos_buffer[:, i].cpu().numpy(), label=f"{joint_order[i]} target", linestyle='dashed')
+        plt.plot(t.cpu().numpy(), dof_pos_buffer[:, i].cpu().numpy(), label=f"{joint_order[i]} pos")
+        plt.plot(t.cpu().numpy(), dof_target_pos_buffer[:, i].cpu().numpy(), label=f"{joint_order[i]} target", linestyle='dashed')
         plt.title(f"Joint {joint_order[i]} Trajectory")
         plt.xlabel("Time [s]")
         plt.ylabel("Joint position [rad]")

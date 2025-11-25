@@ -1,4 +1,7 @@
-# pace_sim2real_ext/utils/paths.py
+# © 2025 ETH Zurich, Robotic Systems Lab
+# Author: Filip Bjelonic
+# Licensed under the Apache License 2.0
+
 import os
 from pathlib import Path
 

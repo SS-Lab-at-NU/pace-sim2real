@@ -1,3 +1,7 @@
+# © 2025 ETH Zurich, Robotic Systems Lab
+# Author: Filip Bjelonic
+# Licensed under the Apache License 2.0
+
 from isaaclab.utils import configclass
 
 from isaaclab_assets.robots.anymal import ANYMAL_D_CFG

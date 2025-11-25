@@ -1,7 +1,6 @@
-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
-# All rights reserved.
-#
-# SPDX-License-Identifier: BSD-3-Clause
+# © 2025 ETH Zurich, Robotic Systems Lab
+# Author: Filip Bjelonic
+# Licensed under the Apache License 2.0
 
 import gymnasium as gym
 

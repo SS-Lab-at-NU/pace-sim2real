@@ -40,7 +40,9 @@ nav:
       - Overview: examples/index.md
       - ANYmal: examples/anymal.md
   - Guides:
-    - Tutorial: tutorial.md
+    - Basics: tutorials/basics.md
+    - Advanced: tutorials/advanced.md
+    - Best practices: tutorials/best_practice.md
   #   - Simulation: simulation.md
   #   - Real-world: real-world.md
   # - Concepts:

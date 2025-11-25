@@ -87,7 +87,7 @@ pace-sim2real/logs/pace/anymal_d_sim
 * Convergence: up to numerical precision (**~1e-12**)
 * Runtime: approximately **2:15 hours** on an NVIDIA RTX 3080
 
-Empirically, final scores below **0.005** indicate a high-quality fit and typically lead to strong sim-to-real transfer performance.
+Empirically, final scores below **0.005** indicate a high-quality fit and typically lead to strong sim-to-real transfer performance (e.g. ANYmal below 0.003, compare [paper](https://arxiv.org/pdf/2509.06342) Figure 9.).
 
 <picture class="plot-full">
   <img src="../../assets/score_light.svg"
