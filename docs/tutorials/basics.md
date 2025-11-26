@@ -50,29 +50,37 @@ ANYDRIVE_PACE_ACTUATOR_CFG = PaceDCMotorCfg(
     max_delay=10,  # max delay in simulation steps
 )
 
-REAL_ROBOT_JOINTS = [
-    "LF_HAA",
-    "LF_HFE",
-    "LF_KFE",
-    "RF_HAA",
-    "RF_HFE",
-    "RF_KFE",
-    "LH_HAA",
-    "LH_HFE",
-    "LH_KFE",
-    "RH_HAA",
-    "RH_HFE",
-    "RH_KFE",
-]
 
-bounds_params = torch.zeros((49, 2))  # 12 + 12 + 12 + 12 + 1 = 49
-bounds_params[:12, 0] = 1e-5
-bounds_params[:12, 1] = 1.0  # armature between 1e-5 - 1.0 [kgm2]
-bounds_params[12:24, 1] = 7.0  # dof_damping between 0.0 - 7.0 [Nm s/rad]
-bounds_params[24:36, 1] = 0.5  # friction between 0.0 - 0.5
-bounds_params[36:48, 0] = -0.1
-bounds_params[36:48, 1] = 0.1  # bias between -0.1 - 0.1 [rad]
-bounds_params[48, 1] = 10.0  # delay between 0.0 - 10.0 [sim steps]
+@configclass
+class AnymalDPaceCfg(PaceCfg):
+    """Pace configuration for Anymal-D robot."""
+    robot_name: str = "anymal_d_sim"
+    data_dir: str = "anymal_d_sim/chirp_data.pt"  # located in pace_sim2real/data/anymal_d_sim/chirp_data.pt
+    bounds_params: torch.Tensor = torch.zeros((49, 2))  # 12 + 12 + 12 + 12 + 1 = 49 parameters to optimize
+    joint_order: list[str] = [
+        "LF_HAA",
+        "LF_HFE",
+        "LF_KFE",
+        "RF_HAA",
+        "RF_HFE",
+        "RF_KFE",
+        "LH_HAA",
+        "LH_HFE",
+        "LH_KFE",
+        "RH_HAA",
+        "RH_HFE",
+        "RH_KFE",
+    ]
+
+    def __post_init__(self):
+        # set bounds for parameters
+        self.bounds_params[:12, 0] = 1e-5
+        self.bounds_params[:12, 1] = 1.0  # armature between 1e-5 - 1.0 [kgm2]
+        self.bounds_params[12:24, 1] = 7.0  # dof_damping between 0.0 - 7.0 [Nm s/rad]
+        self.bounds_params[24:36, 1] = 0.5  # friction between 0.0 - 0.5
+        self.bounds_params[36:48, 0] = -0.1
+        self.bounds_params[36:48, 1] = 0.1  # bias between -0.1 - 0.1 [rad]
+        self.bounds_params[48, 1] = 10.0  # delay between 0.0 - 10.0 [sim steps]
 
 
 @configclass
@@ -86,10 +94,7 @@ class ANYmalDPaceSceneCfg(PaceSim2realSceneCfg):
 class AnymalDPaceEnvCfg(PaceSim2realEnvCfg):
 
     scene: ANYmalDPaceSceneCfg = ANYmalDPaceSceneCfg()
-    sim2real: PaceCfg = PaceCfg(robot_name="anymal_d_sim",
-                                joint_order=REAL_ROBOT_JOINTS,
-                                bounds_params=bounds_params,
-                                data_dir="anymal_d_sim/chirp_data.pt")  # located in pace_sim2real/data/anymal_d_sim/chirp_data.pt
+    sim2real: PaceCfg = AnymalDPaceCfg()
 
     def __post_init__(self):
         # post init of parent
@@ -140,17 +145,24 @@ If your robot uses a specialized actuator model, you can extend `PaceDCMotorCfg`
 
 ---
 
-## Defining the Robot Joint Order
+## Defining PACE specific configs
 
 ```python
-REAL_ROBOT_JOINTS = [ ... ]
+@configclass
+class AnymalDPaceCfg(PaceCfg):
+    ...
 ```
 
+The `AnymalDPaceCfg` block defines algorithmic parameters and data linkage:
+
+* `robot_name`: determines logging directory
+* `data_dir`: path to recorded trajectory data
+* `joint_order`: alignment with real data
+* `bounds_params`: optimization limits
+
+Optional CMA-ES settings (iterations, sigma, epsilon, logging frequency) can also be configured here.
+
 IsaacLab determines joint ordering via breadth-first traversal, which may differ from the ordering used in your real robot’s control stack or logged data. To ensure correct alignment between simulated and real trajectories, explicitly define the joint order used on your physical system here.
-
----
-
-## Defining CMA-ES Parameter Bounds
 
 PACE normalizes optimization parameters to the range [-1, 1]. However, the physically meaningful parameter limits are defined via `bounds_params`, which constrains the sampling domain of the CMA-ES optimizer.
 
@@ -180,25 +192,6 @@ class ANYmalDPaceSceneCfg(PaceSim2realSceneCfg):
 ```
 
 Here, you inherit from `PaceSim2realSceneCfg` and specify your robot USD, initial pose, and associated actuators. Ensure the initial height prevents ground penetration or unwanted contacts. Actuator naming is flexible and purely user-defined.
-
----
-
-## Creating the Environment
-
-```python
-@configclass
-class AnymalDPaceEnvCfg(PaceSim2realEnvCfg):
-    ...
-```
-
-This class ties together the scene and the PACE optimization configuration. The `PaceCfg` block defines algorithmic parameters and data linkage:
-
-* `robot_name`: determines logging directory
-* `joint_order`: alignment with real data
-* `bounds_params`: optimization limits
-* `data_dir`: path to recorded trajectory data
-
-Optional CMA-ES settings (iterations, sigma, epsilon, logging frequency) can also be configured here.
 
 ---
 

@@ -109,9 +109,9 @@ class PaceCfg:
     cmaes: CMAESOptimizerCfg = CMAESOptimizerCfg()
 
     robot_name: str = MISSING
+    data_dir: str = MISSING
     joint_order: list = MISSING
     bounds_params: torch.Tensor = MISSING
-    data_dir: str = MISSING
 
 ##
 # Environment configuration

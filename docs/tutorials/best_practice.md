@@ -6,7 +6,7 @@ These recommendations are derived from practical experience with system identifi
 
 ---
 
-## 1. Choose Bounds Carefully (Most Important)
+## 1. Choose Bounds Carefully
 
 Parameter bounds define the effective search space of CMA-ES and have the strongest influence on convergence quality.
 
@@ -36,7 +36,7 @@ Runtime ∝ population_size × trajectory_length
 GPU memory ∝ population_size × time_steps × joints
 ```
 
-Note: Since we parallelize simulation environments, runtime is not linearly scaling with population size.
+Note: Since we parallelize simulation environments, runtime does not scale linearly with population size and depends on your GPU hardware.
 
 ---
 

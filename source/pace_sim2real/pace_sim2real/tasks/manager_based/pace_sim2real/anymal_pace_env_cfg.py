@@ -8,7 +8,6 @@ from isaaclab_assets.robots.anymal import ANYMAL_D_CFG
 from isaaclab.assets import ArticulationCfg
 from pace_sim2real.utils.pace_actuator_cfg import PaceDCMotorCfg
 from pace_sim2real.tasks.manager_based.pace_sim2real.pace_sim2real_env_cfg import PaceSim2realEnvCfg, PaceSim2realSceneCfg, PaceCfg
-
 import torch
 
 ANYDRIVE_PACE_ACTUATOR_CFG = PaceDCMotorCfg(
@@ -22,29 +21,37 @@ ANYDRIVE_PACE_ACTUATOR_CFG = PaceDCMotorCfg(
     max_delay=10,  # max delay in simulation steps
 )
 
-REAL_ROBOT_JOINTS = [
-    "LF_HAA",
-    "LF_HFE",
-    "LF_KFE",
-    "RF_HAA",
-    "RF_HFE",
-    "RF_KFE",
-    "LH_HAA",
-    "LH_HFE",
-    "LH_KFE",
-    "RH_HAA",
-    "RH_HFE",
-    "RH_KFE",
-]
 
-bounds_params = torch.zeros((49, 2))  # 12 + 12 + 12 + 12 + 1 = 49
-bounds_params[:12, 0] = 1e-5
-bounds_params[:12, 1] = 1.0  # armature between 0.0 - 1.0 [kgm2]
-bounds_params[12:24, 1] = 7.0  # dof_damping between 0.0 - 7.0 [Nm s/rad]
-bounds_params[24:36, 1] = 0.5  # friction between 0.0 - 0.5
-bounds_params[36:48, 0] = -0.1
-bounds_params[36:48, 1] = 0.1  # bias between -0.1 - 0.1 [rad]
-bounds_params[48, 1] = 10.0  # delay between 0.0 - 10.0 [sim steps]
+@configclass
+class AnymalDPaceCfg(PaceCfg):
+    """Pace configuration for Anymal-D robot."""
+    robot_name: str = "anymal_d_sim"
+    data_dir: str = "anymal_d_sim/chirp_data.pt"  # located in pace_sim2real/data/anymal_d_sim/chirp_data.pt
+    bounds_params: torch.Tensor = torch.zeros((49, 2))  # 12 + 12 + 12 + 12 + 1 = 49 parameters to optimize
+    joint_order: list[str] = [
+        "LF_HAA",
+        "LF_HFE",
+        "LF_KFE",
+        "RF_HAA",
+        "RF_HFE",
+        "RF_KFE",
+        "LH_HAA",
+        "LH_HFE",
+        "LH_KFE",
+        "RH_HAA",
+        "RH_HFE",
+        "RH_KFE",
+    ]
+
+    def __post_init__(self):
+        # set bounds for parameters
+        self.bounds_params[:12, 0] = 1e-5
+        self.bounds_params[:12, 1] = 1.0  # armature between 1e-5 - 1.0 [kgm2]
+        self.bounds_params[12:24, 1] = 7.0  # dof_damping between 0.0 - 7.0 [Nm s/rad]
+        self.bounds_params[24:36, 1] = 0.5  # friction between 0.0 - 0.5
+        self.bounds_params[36:48, 0] = -0.1
+        self.bounds_params[36:48, 1] = 0.1  # bias between -0.1 - 0.1 [rad]
+        self.bounds_params[48, 1] = 10.0  # delay between 0.0 - 10.0 [sim steps]
 
 
 @configclass
@@ -58,10 +65,7 @@ class ANYmalDPaceSceneCfg(PaceSim2realSceneCfg):
 class AnymalDPaceEnvCfg(PaceSim2realEnvCfg):
 
     scene: ANYmalDPaceSceneCfg = ANYmalDPaceSceneCfg()
-    sim2real: PaceCfg = PaceCfg(robot_name="anymal_d_sim",
-                                joint_order=REAL_ROBOT_JOINTS,
-                                bounds_params=bounds_params,
-                                data_dir="anymal_d_sim/chirp_data.pt")  # located in pace_sim2real/data/anymal_d_sim/chirp_data.pt
+    sim2real: PaceCfg = AnymalDPaceCfg()
 
     def __post_init__(self):
         # post init of parent

@@ -28,7 +28,9 @@ Use this documentation to get started, explore examples, and understand how to a
 - **Getting started** – prerequisites, installation, and your first steps with PACE.
 - **Examples** – minimal scripts demonstrating parameter identification and deployment on the public version of [ANYmal](https://www.anybotics.com/robotics/anymal/).
 - **Guides** – higher-level guides that walk through typical workflows:
-    - **Tutorial** – step-by-step setup of your own PACE environment.
+    - **Basics** – step-by-step setup of your own PACE environment.
+    - **Advanced** – extending the framework with custom objectives, parameters, and optimization logic.
+    - **Best practices** – practical recommendations, guidelines, and common pitfalls.
 <!--
     - **Simulation** – recommended simulation settings and example environments.
     - **Real-world** – deployment workflows and hardware experiment examples.
@@ -41,7 +43,7 @@ Additional sections such as Concepts, API Reference, and Development are planned
 
 ## How to cite
 
-If you use **PACE Sim2Real** in your research, please cite our [paper](https://arxiv.org/pdf/2509.06342):
+If you use **PACE** in your research, please cite our [paper](https://arxiv.org/pdf/2509.06342):
 
 > F. Bjelonic, F. Tischhauser, and M. Hutter,  
 > _Towards Bridging the Gap: Systematic Sim-to-Real Transfer for Diverse Legged Robots_, arXiv:2509.06342, 2025.

@@ -98,6 +98,39 @@ logs/pace/<robot_name>/
 
 ---
 
+## License
+
+© 2025 ETH Zurich, Robotic Systems Lab, Filip Bjelonic
+
+This project is licensed under the Apache License, Version 2.0.
+See the LICENSE file for details.
+
+---
+
+## Maintainers
+
+The PACE project is actively maintained by:
+
+- Filip Bjelonic (ETH Zurich, RSL)
+- René Zurbrüegg (ETH Zurich, RSL)
+- Oliver Fischer (ETH Zurich, RSL)
+
+The maintainers are responsible for reviewing contributions, managing issues, and guiding the technical direction of the framework.
+
+---
+
+## Acknowledgements
+
+We would like to thank the RSL Learning Group for many insightful discussions that influenced the development of PACE. We are especially grateful to Konrad and Matthias for valuable technical input related to electronics and system integration.
+
+We also acknowledge Zichong, Stephan, Efe, Yuntao, René, Clemens, Ryo, Alexander, and Fabio for employing and extending the PACE framework in their own research, providing valuable feedback and practical insights.
+
+We further thank Oliver Fischer and René Zurbrüegg for their direct contributions to the codebase and their ongoing support as project maintainers.
+
+We also thank the early testers — Clemens and Oliver — who evaluated the framework prior to its public release and provided valuable feedback on usability, stability, and documentation improvements.
+
+---
+
 ## 🛠 Code Formatting
 
 We provide a pre-commit configuration to automatically format and lint the codebase.
