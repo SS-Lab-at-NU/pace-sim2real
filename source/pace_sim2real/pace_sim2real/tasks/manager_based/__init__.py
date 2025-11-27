@@ -9,6 +9,6 @@ gym.register(
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
-        "env_cfg_entry_point": f"{__name__}.pace_sim2real.anymal_pace_env_cfg:AnymalDPaceEnvCfg"
+        "env_cfg_entry_point": f"{__name__}.pace.anymal_pace_env_cfg:AnymalDPaceEnvCfg"
     },
 )

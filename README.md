@@ -10,7 +10,7 @@ It enables accurate actuator modeling and robust adaptation from simulation to r
 PACE bridges the gap between simulation and real hardware by:
 
 * Estimating actuator and joint dynamics directly from measured data
-* Using CMA-ES for robust parameter optimization
+* Using CMA-ES for parameter optimization
 * Applying learned parameters to improve sim-to-real locomotion performance
 * Supporting multiple robot platforms and actuator types
 
@@ -95,6 +95,20 @@ This will estimate the actuator and joint parameters using CMA-ES and store resu
 ```
 logs/pace/<robot_name>/
 ```
+
+---
+
+## Usage
+
+Recommended imports for custom projects:
+
+```python
+from pace_sim2real import PaceCfg, PaceSim2realEnvCfg, CMAESOptimizer
+from pace_sim2real.utils import PaceDCMotorCfg, PaceDCMotor
+import pace_sim2real.tasks  # registers environments
+```
+
+Please refer to the official documentation for further information.
 
 ---
 

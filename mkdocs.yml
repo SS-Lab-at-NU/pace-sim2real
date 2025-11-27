@@ -35,6 +35,7 @@ nav:
   - Home: index.md
   - Getting started:
       - Installation: installation.md
+      - Importing: importing.md
       - Basic usage: usage.md
   - Examples: 
       - Overview: examples/index.md

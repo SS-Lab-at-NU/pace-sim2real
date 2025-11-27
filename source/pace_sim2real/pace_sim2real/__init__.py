@@ -1,20 +1,25 @@
-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
-# All rights reserved.
-#
-# SPDX-License-Identifier: BSD-3-Clause
+# © 2025 ETH Zurich, Robotic Systems Lab
+# Author: Filip Bjelonic
+# Licensed under the Apache License 2.0
 
 """
-Python module serving as a project/extension template.
+PACE: Precise Adaptation through Continuous Evolution
+
+Public Python API for the pace_sim2real package.
 """
 
-# Register Gym environments.
-from .tasks import *
+from .tasks.manager_based.pace.pace_sim2real_env_cfg import (
+    PaceSim2realEnvCfg,
+    PaceSim2realSceneCfg,
+    PaceCfg,
+)
 
-# Register UI extensions.
-from .ui_extension_example import *
+# Optimizer
+from .optim import CMAESOptimizer
 
-# Register optimizers.
-from .optim import *
-
-# Register utils.
-from .utils import *
+__all__ = [
+    "PaceSim2realEnvCfg",
+    "PaceSim2realSceneCfg",
+    "PaceCfg",
+    "CMAESOptimizer"
+]

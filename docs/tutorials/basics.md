@@ -24,7 +24,7 @@ The core of the PACE framework is the definition and registration of a task-spec
 The reference implementation for ANYmal can be found at:
 
 ```
-pace-sim2real/source/pace_sim2real/pace_sim2real/tasks/manager_based/pace_sim2real/anymal_pace_env_cfg.py
+pace-sim2real/source/pace_sim2real/pace_sim2real/tasks/manager_based/pace/anymal_pace_env_cfg.py
 ```
 
 This file provides the complete configuration of the robotic system and its associated PACE parameters.
@@ -34,9 +34,8 @@ from isaaclab.utils import configclass
 
 from isaaclab_assets.robots.anymal import ANYMAL_D_CFG
 from isaaclab.assets import ArticulationCfg
-from pace_sim2real.utils.pace_actuator_cfg import PaceDCMotorCfg
-from pace_sim2real.tasks.manager_based.pace_sim2real.pace_sim2real_env_cfg import PaceSim2realEnvCfg, PaceSim2realSceneCfg, PaceCfg
-
+from pace_sim2real.utils import PaceDCMotorCfg
+from pace_sim2real import PaceSim2realEnvCfg, PaceSim2realSceneCfg, PaceCfg
 import torch
 
 ANYDRIVE_PACE_ACTUATOR_CFG = PaceDCMotorCfg(
@@ -175,8 +174,9 @@ The parameters are laid out as:
 * Global delay: `[-1]`
 
 ```python
-bounds_params = torch.zeros((49, 2))
-...
+def __post_init__(self):
+        # set bounds for parameters
+        ...
 ```
 
 The values should be chosen conservatively based on hardware knowledge or prior estimates, and can be refined iteratively as needed.
@@ -211,7 +211,7 @@ gym.register(
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
-        "env_cfg_entry_point": f"{__name__}.pace_sim2real.anymal_pace_env_cfg:AnymalDPaceEnvCfg"
+        "env_cfg_entry_point": f"{__name__}.pace.anymal_pace_env_cfg:AnymalDPaceEnvCfg"
     },
 )
 ```
@@ -341,11 +341,14 @@ Copy the following files (or directly import them in your learning environment):
 
 Use the following procedure:
 
-1. Import `PaceDCMotor` and `PaceDCMotorCfg` into your project.
+1. Import `PaceDCMotorCfg` (and optionally `PaceDCMotor`) into your project.
+    ```python
+    from pace_sim2real.utils import PaceDCMotorCfg, PaceDCMotor
+    ```
 2. During initialization, set:
 
-    * Joint delay
-    * Joint bias
+    * `max_delay`
+    * `encoder_bias`
 
     using the values obtained from the parameter identification step.
 

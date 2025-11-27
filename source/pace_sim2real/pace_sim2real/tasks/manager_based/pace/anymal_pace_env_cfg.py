@@ -6,8 +6,8 @@ from isaaclab.utils import configclass
 
 from isaaclab_assets.robots.anymal import ANYMAL_D_CFG
 from isaaclab.assets import ArticulationCfg
-from pace_sim2real.utils.pace_actuator_cfg import PaceDCMotorCfg
-from pace_sim2real.tasks.manager_based.pace_sim2real.pace_sim2real_env_cfg import PaceSim2realEnvCfg, PaceSim2realSceneCfg, PaceCfg
+from pace_sim2real.utils import PaceDCMotorCfg
+from pace_sim2real import PaceSim2realEnvCfg, PaceSim2realSceneCfg, PaceCfg
 import torch
 
 ANYDRIVE_PACE_ACTUATOR_CFG = PaceDCMotorCfg(

@@ -36,7 +36,7 @@ from isaaclab_tasks.utils import parse_env_cfg
 from torch import pi
 
 import pace_sim2real.tasks  # noqa: F401
-from pace_sim2real.utils.paths import project_root
+from pace_sim2real.utils import project_root
 
 
 def main():

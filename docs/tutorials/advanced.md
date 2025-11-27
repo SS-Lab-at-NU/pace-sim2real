@@ -10,6 +10,11 @@ pace-sim2real/source/pace_sim2real/pace_sim2real/optim/cma_es.py
 
 This file defines the `CMAESOptimizer` class, which orchestrates population sampling, evaluation, simulator parameter updates, convergence monitoring, and logging. Understanding and modifying this class enables fine-grained control over the entire identification process.
 
+The class can be imported using
+```python
+from pace_sim2real import CMAESOptimizer
+```
+
 ---
 
 ## Extension Strategies

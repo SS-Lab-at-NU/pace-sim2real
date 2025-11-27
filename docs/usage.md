@@ -88,7 +88,7 @@ python scripts/pace/fit.py \
 python scripts/pace/plot_trajectory.py
 ```
 
-This utility visualises the optimized trajectory and/or the evolution of the score over iterations.
+This utility visualises the optimized trajectory and/or the evolution of the score over iterations. If no `folder_name` argument is given, the script will use the most recent evolution.
 
 ### Common arguments
 
@@ -120,4 +120,4 @@ python scripts/pace/plot_trajectory.py \
 python script_name.py --help
 ```
 
-More advanced workflows and in-depth explanations are covered in the Guides and Examples sections.
+More advanced workflows and in-depth explanations are covered in the Examples and Guides sections.
