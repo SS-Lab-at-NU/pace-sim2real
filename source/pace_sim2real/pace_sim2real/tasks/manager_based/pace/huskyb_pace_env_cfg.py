@@ -4,7 +4,7 @@
 
 from isaaclab.utils import configclass
 
-from pace_sim2real.assets import HUSKY_B_CFG
+from pace_sim2real.assets.husky_beta import HUSKY_B_CFG
 from isaaclab.assets import ArticulationCfg
 from pace_sim2real.utils import PaceDCMotorCfg
 from pace_sim2real import PaceSim2realEnvCfg, PaceSim2realSceneCfg, PaceCfg
@@ -63,5 +63,5 @@ class HuskyBetaPaceEnvCfg(PaceSim2realEnvCfg):
         super().__post_init__()
 
         # robot sim and control settings
-        self.sim.dt = 0.0025  # 400Hz simulation
-        self.decimation = 1  # 400Hz control
+        self.sim.dt = 0.005  # 200Hz simulation
+        self.decimation = 1  # 200Hz control

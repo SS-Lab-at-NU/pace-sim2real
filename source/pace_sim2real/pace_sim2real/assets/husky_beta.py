@@ -22,7 +22,8 @@ JOINT_ORDER = [
 
 HUSKY_B_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
-        usd_path=f"{'/workspace' if os.path.exists('/workspace') else subprocess.check_output(['git', 'rev-parse', '--show-toplevel'], text=True).strip()}/sslab-robots/husky_beta/usd/huskyb_full/huskyb_full.usd",
+        # usd_path=f"{'/workspace' if os.path.exists('/workspace') else subprocess.check_output(['git', 'rev-parse', '--show-toplevel'], text=True).strip()}/sslab-robots/husky_beta/usd/huskyb_full/huskyb_full.usd",
+        usd_path=f"/home/siliconsynapse/Documents/sslab_isaaclab/sslab-robots/husky_beta/usd/huskyb_full/huskyb_full.usd",
         activate_contact_sensors=True,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,

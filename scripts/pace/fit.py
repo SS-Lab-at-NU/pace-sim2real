@@ -27,6 +27,16 @@ simulation_app = app_launcher.app
 
 import gymnasium as gym
 import torch
+import sys, types
+import numpy
+if not hasattr(numpy, '_core'):
+    # Compat shim: numpy 1.x -> 2.x checkpoint loading
+    import numpy.core as _nc
+    sys.modules['numpy._core'] = _nc
+    sys.modules['numpy._core.multiarray'] = _nc.multiarray
+    sys.modules['numpy._core.numeric'] = _nc.numeric
+    sys.modules['numpy._core._multiarray_umath'] = _nc._multiarray_umath
+import pandas as pd 
 
 import isaaclab_tasks  # noqa: F401
 from isaaclab_tasks.utils import parse_env_cfg
@@ -59,6 +69,13 @@ def main():
     log_dir = project_root() / "logs" / "pace" / env_cfg.sim2real.robot_name
 
     data = torch.load(data_file)
+    for k, v in data.items():
+        if isinstance(v, numpy.ndarray):
+            data[k] = torch.from_numpy(v)
+        elif isinstance(v, pd.DataFrame):
+            data[k] = torch.from_numpy(v.values)
+        elif isinstance(v, pd.Series):
+            data[k] = torch.from_numpy(v.values)
     time_data = data["time"].to(env.unwrapped.device)
     target_dof_pos = data["des_dof_pos"].to(env.unwrapped.device)
     measured_dof_pos = data["dof_pos"].to(env.unwrapped.device)
