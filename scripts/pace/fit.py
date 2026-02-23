@@ -76,6 +76,9 @@ def main():
             data[k] = torch.from_numpy(v.values)
         elif isinstance(v, pd.Series):
             data[k] = torch.from_numpy(v.values)
+    data["des_dof_pos"] = data["des_dof_pos"].to(env.unwrapped.device).float().T
+    data["dof_pos"] = data["dof_pos"].to(env.unwrapped.device).float().T
+
     time_data = data["time"].to(env.unwrapped.device).float()
     target_dof_pos = data["des_dof_pos"].to(env.unwrapped.device).float()
     measured_dof_pos = data["dof_pos"].to(env.unwrapped.device).float()
